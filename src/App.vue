@@ -21,7 +21,7 @@ const logout = () => {
 </script>
 
 <template>
-  <NavBar v-bind:userInfo="userInfo" v-on:logout="logout" />
+
   <RouterView v-on:login="login" />
 </template>
 
