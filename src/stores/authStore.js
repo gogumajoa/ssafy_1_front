@@ -1,57 +1,59 @@
-import { reactive } from 'vue'
-import { defineStore } from 'pinia'
+import { reactive } from "vue";
+import { defineStore } from "pinia";
 
 import http from "@/common/axios.js";
-import notLoginUserProfileImageUrl from '@/assets/noProfile.png';
+// import notLoginaccountProfileImageUrl from '@/assets/noProfile.png';
 
-export const useAuthStore = defineStore('authStore', () => {
-  console.log(notLoginUserProfileImageUrl)
+export const useAuthStore = defineStore("authStore", () => {
+  console.log(notLoginaccountProfileImageUrl);
   const authStore = reactive({
     // NavBar
     isLogin: false,
 
-    userName: '',
-    userProfileImageUrl: notLoginUserProfileImageUrl,
+    accountName: "",
+    accountProfileImageUrl: notLoginaccountProfileImageUrl,
 
     // Login
-    userEmail: "dskim@dskim.com",
-    userPassword: "1234",
-  })
+    accountEmail: "dskim@dskim.com",
+    accountPassword: "1234",
+  });
 
   // getter 는 생략 직접 사용하는 걸로
   const setLogin = (payload) => {
     sessionStorage.setItem("isLogin", "true");
-    sessionStorage.setItem("userName", payload.userName);
-    sessionStorage.setItem("userProfileImageUrl", payload.userProfileImageUrl);
+    sessionStorage.setItem("accountName", payload.accountName);
+    sessionStorage.setItem(
+      "accountProfileImageUrl",
+      payload.accountProfileImageUrl
+    );
 
     authStore.isLogin = payload.isLogin;
-    authStore.userName = payload.userName;
-    authStore.userProfileImageUrl = payload.userProfileImageUrl;
-    console.log(authStore)
-  }
+    authStore.accountName = payload.accountName;
+    authStore.accountProfileImageUrl = payload.accountProfileImageUrl;
+    console.log(authStore);
+  };
 
   const logout = async () => {
     try {
-       let { data } = await http.get("/logout");
+      let { data } = await http.get("/logout");
 
-       if (data.result == "success") {
-        setLogout()
-       }
+      if (data.result == "success") {
+        setLogout();
+      }
     } catch (error) {
-       console.error(error);
+      console.error(error);
     }
-  }
+  };
 
   const setLogout = () => {
     sessionStorage.removeItem("isLogin");
-    sessionStorage.removeItem("userName");
-    sessionStorage.removeItem("userProfileImageUrl");
+    sessionStorage.removeItem("accountName");
+    sessionStorage.removeItem("accountProfileImageUrl");
 
     authStore.isLogin = false;
-    authStore.userName = '';
-    authStore.userProfileImageUrl = notLoginUserProfileImageUrl;
-  }
+    authStore.accountName = "";
+    authStore.accountProfileImageUrl = notLoginaccountProfileImageUrl;
+  };
 
-  return { authStore, setLogin, setLogout, logout }
-})
-
+  return { authStore, setLogin, setLogout, logout };
+});
