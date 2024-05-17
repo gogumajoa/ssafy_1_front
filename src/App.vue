@@ -2,8 +2,6 @@
 import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 
-import NavBar from "@/views/NavBar.vue";
-
 const notLoginedUserInfo = {
   isLogin: false,
   userRole: "",
@@ -21,7 +19,6 @@ const logout = () => {
 </script>
 
 <template>
-
   <RouterView v-on:login="login" />
 </template>
 
