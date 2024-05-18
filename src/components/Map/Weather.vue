@@ -3,7 +3,6 @@
     <div class="custom_typecontrol">
       <table>
         <tr weight:46px>
-
           <td v-for="(img, index) in filteredData" :key="index">
             <img :src="img" alt="날씨 이미지">
           </td>
@@ -38,10 +37,10 @@ export default {
   try {
 
     const requestData = {
-      numOfRows: 700,
+      numOfRows: 800,
       pageNo: 1,
       dataType: "json",
-      baseDate: "20240517",
+      baseDate: "20240518",
       baseTime: "0500",
       nx: 55,
       ny: 127
@@ -63,7 +62,7 @@ export default {
 
     const dates = [];
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) { //나중에 3으로 고쳐야함
       const date = new Date(year, currentDate.getMonth(), currentDate.getDate() + i);
       const formattedDate = `${date.getFullYear()}${currentMonth}${('0' + (date.getDate())).slice(-2)}`;
       dates.push(formattedDate);
@@ -71,15 +70,19 @@ export default {
 
     dates.forEach(date => {
       // 각 날짜에 해당하는 PTY와 SKY 데이터 추출
-      const ptyData = this.filterData(items, "PTY", date, "1400");
+      const ptyData = this.filterData(items, "PTY", date, "0500");
       
-      const skyData = this.filterData(items, "SKY", date, "1400");
+      const skyData = this.filterData(items, "SKY", date, "0500");
 
       // pty가 0일 때는 sky의 값으로, 그 외에는 pty의 값으로 설정
+      console.log(ptyData);
+      console.log(skyData);
 
       let img="";
-      if(ptyData.fcstValue === "0"){
-        if(skyData.fcstValue==="1") img = "/images/sunny(1).JPG";
+      if (typeof ptyData === undefined ) img = "/images/sunny(1).JPG";
+      else if(ptyData.fcstValue === "0"){
+        if (typeof skyData === undefined ) img = "/images/sunny(1).JPG";
+        else if(skyData.fcstValue==="1") img = "/images/sunny(1).JPG";
         else if(skyData.fcstValue==="3")  img = "/images/cloud(3).JPG"
         else if(skyData.fcstValue==="4")  img = "/images/cloudy(4).JPG"
         else img="없음"
