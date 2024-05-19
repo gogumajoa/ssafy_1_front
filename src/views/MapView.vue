@@ -7,12 +7,14 @@
       <input class="search" type="text" v-model="keyword" placeholder="장소를 검색하세요" @input="filterPlaces" />
       <button class="filter" type="button"></button>
       <!-- 장소 목록  -->
-      <TouristSpotList :touristSpots="touristSpots"></TouristSpotList>
-    </div> 
+<TouristSpotList :touristSpots="touristSpots" @spot-click="showDetail"></TouristSpotList>    </div> 
     <!-- 날씨 -->
     <Weather/>
     <!-- 지도 영역 -->
     <div ref="map" class="map"></div>
+    <!-- Detail 컴포넌트 -->
+    <Detail v-if="selectedSpotId" :spotId="selectedSpotId" />
+
   </div>
 </template>
 
@@ -21,6 +23,8 @@ import axios from 'axios';
 import TouristSpotList from '@/components/Map/TouristSpotList.vue'
 import Weather from '@/components/Map/Weather.vue'
 import mapStore from '@/stores/mapStore.js';
+import Detail from '@/components/Map/TouristSpotDetail.vue'
+import store from '@/stores/index.js'; // 수정
 import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
@@ -28,28 +32,47 @@ export default {
   name: 'MapView',
   components: {
     TouristSpotList,
-    Weather
+    Weather,
+    Detail
   },
+  
   data() {
     return {
-      touristSpots: []
+      touristSpots: [],
+      map: null, // 카카오맵 객체
+      markers: [] // 마커들을 저장할 배열
     };
   },
   methods: {
-    addMarkersToMap() {
-      // 카카오맵 API를 통해 마커를 생성하고 지도에 추가
-      this.touristSpots.forEach(spot => {
-        if (spot.latitude && spot.longitude) { // 경도와 위도 값이 있는지 확인
-          const markerPosition = new window.kakao.maps.LatLng(spot.latitude, spot.longitude);
-          const marker = new window.kakao.maps.Marker({
-            position: markerPosition
-          });
-          marker.setMap(this.map);
-        }
+    addMarker(spot) {
+      console.log('spot : ', spot);
+      //console.log(spot.touristspotLatitude);
+      const markerPosition = new window.kakao.maps.LatLng(spot.touristspotLatitude, spot.touristspotLongitude);
+      const marker = new window.kakao.maps.Marker({
+        position: markerPosition
       });
-    }
+
+     // 마커가 표시될 HTML 요소 생성
+  const markerElement = document.createElement('div');
+  markerElement.innerHTML = `<div class="custom-marker">${spot.touristspotTitle}</div>`;
+
+      marker.setMap(this.map);
+
+        // 마커 위에 HTML 요소 추가
+  const markerOverlay = new window.kakao.maps.CustomOverlay({
+    content: markerElement,
+    position: marker.getPosition(),
+    yAnchor: -0.2 // 마커 아래로 10px 내려감
+  });
+  markerOverlay.setMap(this.map);
+
+      this.markers.push(marker);
+    },
+
+    
   },
   mounted() {
+    
     // Kakao Maps API 스크립트 로드
     const script = document.createElement("script");
     script.async = true;
@@ -57,22 +80,41 @@ export default {
     document.head.appendChild(script);
 
     // Kakao Maps API 스크립트 로드 후 콜백으로 지도 초기화
-    script.onload = () => {
-      window.kakao.maps.load(() => {
-        const container = this.$refs.map;
-        const options = {
-          center: new window.kakao.maps.LatLng(35.76176465, 129.3649053),
-          level: 3
-        };
-        this.map = new window.kakao.maps.Map(container, options);
-        
-        // 마커 추가 함수 호출
-        this.addMarkersToMap();
+  script.onload = () => {
+    window.kakao.maps.load(() => {
+      const container = this.$refs.map;
+      const options = {
+        center: new window.kakao.maps.LatLng(35.76176465, 129.3649053),
+        level: 3
+      };
+      this.map = new window.kakao.maps.Map(container, options);
+
+      // 초기 마커 추가
+      const initialSpots = this.$store.state.touristSpots; // 초기 관광지 정보를 가져옵니다.
+      console.log(initialSpots);
+      initialSpots.touristSpots.forEach(spot => {
+        this.addMarker(spot); // 초기 관광지 정보를 기반으로 마커를 추가합니다.
       });
-    };
+
+
+      // Vuex store의 관광지 정보를 감시하여 상태가 변경될 때마다 마커를 추가합니다.
+      this.$store.subscribe((mutation, state) => {
+        console.log(mutation);
+        console.log(state);
+        if (mutation.type === 'touristSpots/ADD_TOURIST_SPOTS') {
+          const newSpots = mutation.payload; // 새로운 관광지 정보를 가져옵니다.
+          console.log(newSpots);
+          newSpots.forEach(spot => {
+            this.addMarker(spot); // 새로운 관광지 정보를 기반으로 마커를 추가합니다.
+          });
+        }
+      });
+    });
   }
-};
+}
+}
 </script>
+
 
 <style scoped>
 .container {

@@ -1,6 +1,6 @@
 <template>
   <div class="results-container">
-    <div v-for="spot in touristSpots" :key="spot.id" class="result">
+    <div v-for="spot in touristSpots" :key="spot.id" class="result" @click="showDetail(spot)">
       <div>
         <h5>{{ spot.touristspotTitle }}</h5>
         <p>{{ spot.description }}</p>
@@ -9,38 +9,26 @@
     </div>
     <InfiniteLoading @infinite="load"></InfiniteLoading>
   </div>
+  <Detail :spot="selectedSpot" v-if="selectedSpot"></Detail>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { computed, onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 import InfiniteLoading from 'v3-infinite-loading';
+import Detail from './TouristSpotDetail.vue'; // Detail 컴포넌트를 import
 
-const touristSpots = ref([]);
-let page=1;
-const load = async $state => {
-  try {
-    const response = await axios.get('http://localhost:8080/touristspot', {
-      params: {
-        pageSize: 10,
-        pageNum: page*10+1,
-        //touristSpots.value.length / 10 + 1
-      }
-    });
-    const json = response.data;
-    if (json.length < 10) {
-      $state.complete();
-    } else {
-      touristSpots.value.push(...json);
-      $state.loaded(); // Notify InfiniteLoading that more items have been loaded
-    }
-    page++;
-    console.log(touristSpots.value);
+const selectedSpot = ref(null);
 
-  } catch (error) {
-    console.error('Error loading more items:', error);
-    $state.complete(); // Ensure the loading state is reset in case of error
-  }
+const store = useStore();
+const touristSpots = computed(() => store.getters['touristSpots/touristSpots']);
+
+const load = $state => {
+  store.dispatch('touristSpots/loadTouristSpots', $state);
+};
+
+const showDetail = (spot) => {
+  selectedSpot.value = spot;
 };
 
 // 페이지 로드시 초기 데이터 불러오기

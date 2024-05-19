@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { createRouter, createWebHistory } from 'vue-router'
-
+import store from './stores'; // Vuex 스토어를 가져옵니다
 import App from "./App.vue";
 import router from "./router";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -19,5 +19,6 @@ app.component("infinite-loading", InfiniteLoading);
 app.use(mapStore);
 app.use(createPinia());
 app.use(router);
+app.use(store);
 
 app.mount("#app");

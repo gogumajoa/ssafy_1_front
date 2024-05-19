@@ -40,7 +40,7 @@ export default {
       numOfRows: 800,
       pageNo: 1,
       dataType: "json",
-      baseDate: "20240518",
+      baseDate: "20240519",
       baseTime: "0500",
       nx: 55,
       ny: 127
