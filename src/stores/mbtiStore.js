@@ -3,7 +3,7 @@ const state = {
     currentView: 'main',
     qnaList: [
         {
-          q: '1. 든든한 식도락 여행 vs 재밌는 액티비티 여행',
+          q: '1. 재밌는 액티비티 여행 vs 든든한 식도락 여행',
           a: [
             { answer: './images/mbti/I.JPG', type: 'I' },
             { answer: './images/mbti/E.JPG', type: 'E' },
