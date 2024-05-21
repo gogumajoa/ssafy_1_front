@@ -34,14 +34,39 @@ export default {
   
   methods: {
     async fetchWeatherData() {
+    const currentDate = new Date();
+    let hours = currentDate.getHours();
+    let minutes = currentDate.getMinutes();
+
+    // 분이 40분을 넘지 않을 때만 전의 시간을 출력합니다.
+    if (minutes <= 40) {
+        // 시간을 감소시킵니다.
+        hours -= 1;
+    }
+
+    // 시간과 분이 음수가 되지 않도록 보정합니다.
+    if (hours < 0) {
+        hours = 23; // 0시부터 23시까지의 범위를 가지므로 23으로 설정합니다.
+    }
+
+    // 시간과 분이 한 자리 숫자일 경우 앞에 0을 붙여줍니다.
+    hours = hours < 10 ? '0' + hours : hours;
+    let currentTime = hours+'00';
+    
+    let nextTime = (hours+1)+'00'
+    if(hours+1 === 25) nextTime='0000'
+
+    console.log(currentTime);
+    console.log(nextTime);
   try {
 
+
     const requestData = {
-      numOfRows: 800,
+      numOfRows: 1000,
       pageNo: 1,
       dataType: "json",
-      baseDate: "20240519",
-      baseTime: "0500",
+      baseDate: "20240521",
+      baseTime: currentTime,
       nx: 55,
       ny: 127
     };
@@ -52,17 +77,17 @@ export default {
       }
     });
     
-    
+    console.log(response.data.response.body);
     const items = response.data.response.body.items.item;
     const filteredData = [];
-    const currentDate = new Date();
+    
     const year = currentDate.getFullYear();
     const currentMonth = ('0' + (currentDate.getMonth() + 1)).slice(-2); // 현재 월
     const currentDay = ('0' + currentDate.getDate()).slice(-2); // 현재 일
 
     const dates = [];
 
-    for (let i = 0; i < 2; i++) { //나중에 3으로 고쳐야함
+    for (let i = 0; i < 3; i++) { //나중에 3으로 고쳐야함
       const date = new Date(year, currentDate.getMonth(), currentDate.getDate() + i);
       const formattedDate = `${date.getFullYear()}${currentMonth}${('0' + (date.getDate())).slice(-2)}`;
       dates.push(formattedDate);
@@ -70,9 +95,10 @@ export default {
 
     dates.forEach(date => {
       // 각 날짜에 해당하는 PTY와 SKY 데이터 추출
-      const ptyData = this.filterData(items, "PTY", date, "0500");
+
+      const ptyData = this.filterData(items, "PTY", date, nextTime);
       
-      const skyData = this.filterData(items, "SKY", date, "0500");
+      const skyData = this.filterData(items, "SKY", date, nextTime);
 
       // pty가 0일 때는 sky의 값으로, 그 외에는 pty의 값으로 설정
       console.log(ptyData);
