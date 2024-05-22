@@ -38,6 +38,13 @@ export default {
     let hours = currentDate.getHours();
     let minutes = currentDate.getMinutes();
 
+    let year = currentDate.getFullYear();
+    let month = String(currentDate.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
+    let day = String(currentDate.getDate()).padStart(2, '0');
+
+    // YYYYMMDD 형식으로 만듦
+    let formattedDate = `${year}${month}${day}`;
+
     // 분이 40분을 넘지 않을 때만 전의 시간을 출력합니다.
     if (minutes <= 40) {
         // 시간을 감소시킵니다.
@@ -48,15 +55,43 @@ export default {
     if (hours < 0) {
         hours = 23; // 0시부터 23시까지의 범위를 가지므로 23으로 설정합니다.
     }
-
-    // 시간과 분이 한 자리 숫자일 경우 앞에 0을 붙여줍니다.
-    hours = hours < 10 ? '0' + hours : hours;
-    let currentTime = hours+'00';
+    let nextTime=0;
+    if(hours+1<10)
+    {
+      nextTime = '0'+(hours+1)+'00'
+    }
+    else{
+      nextTime =  (hours+1)+'00'
+    }
     
-    let nextTime = (hours+1)+'00'
     if(hours+1 === 25) nextTime='0000'
 
-    console.log(currentTime);
+    hours = hours < 10 ? '0' + hours : hours;
+ 
+    const times = [200, 500, 800, 1100, 1400, 1700, 2000, 2300];
+    
+  // 현재 시간 형식을 HHMM으로 맞춥니다.
+  let currentTimeInMinutes = hours * 100;
+
+  // closestTime을 계산합니다.
+  let closestTime = times[0];
+  for (let time of times) {
+      if (currentTimeInMinutes >= time) {
+          closestTime = time;
+      } else {
+          break;
+      }
+  }
+
+  // 시간 형식을 HH00으로 맞춥니다.
+  hours = Math.floor(closestTime / 100);
+  hours = hours < 10 ? '0' + hours : hours;
+  let currentTime = hours + '00';
+
+  console.log('Current Time:', currentTime);
+   
+
+    console.log(formattedDate);
     console.log(nextTime);
   try {
 
@@ -65,7 +100,7 @@ export default {
       numOfRows: 1000,
       pageNo: 1,
       dataType: "json",
-      baseDate: "20240521",
+      baseDate: formattedDate,
       baseTime: currentTime,
       nx: 55,
       ny: 127
@@ -77,7 +112,7 @@ export default {
       }
     });
     
-    console.log(response.data.response.body);
+    console.log(response);
     const items = response.data.response.body.items.item;
     const filteredData = [];
     
@@ -87,7 +122,7 @@ export default {
 
     const dates = [];
 
-    for (let i = 0; i < 3; i++) { //나중에 3으로 고쳐야함
+    for (let i = 0; i < 3; i++) { 
       const date = new Date(year, currentDate.getMonth(), currentDate.getDate() + i);
       const formattedDate = `${date.getFullYear()}${currentMonth}${('0' + (date.getDate())).slice(-2)}`;
       dates.push(formattedDate);
@@ -163,18 +198,19 @@ td{
   border: 2px;
   border-color: black;
   text-align: center;
+  font-size:20px;
 }
 
 td img{
-  height: 45px;
+  height: 80px;
 }
 
 .custom_typecontrol {
-  top: 90%;
-  left: 92%;
+  top: 85%;
+  left: 85%;
   z-index: 2;
   position:absolute;
-  font-size:12px;
+  font-size:16px;
   font-size: large;
   font-family:'Malgun Gothic', '맑은 고딕', sans-serif;
   background-color: white;}

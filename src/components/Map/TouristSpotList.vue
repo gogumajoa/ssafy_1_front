@@ -128,7 +128,7 @@ onMounted(() => {
 .search {
   position: absolute;
   top: 2%;
-  width: 75%;
+  width: 73%;
   height: 3%;
   padding: 18px;
   border-radius: 10px;
@@ -141,7 +141,7 @@ onMounted(() => {
   /* background-position: center; */
   /* background-size: 70%; */
   line-height: 1px;
-  left: 85%;
+  left: 82%;
   position: absolute;
   top: 2%;
   width: 24%;

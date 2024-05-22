@@ -89,7 +89,7 @@ export default {
               this.addMarker(spot); // 새로운 관광지 정보를 기반으로 마커를 추가합니다.
             });
           }
-          else if(mutation.type === 'touristSpots/CLEAR_TOURIST_SPOTS'){
+          else if(mutation.type === 'touristSpots/SET_TOURIST_SPOTS'){
              // 새로운 관광지 정보를 가져옵니다.
             const newSpots = mutation.payload;
             console.log(newSpots);

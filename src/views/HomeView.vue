@@ -1,54 +1,73 @@
 <template>
-  <section class="section site-portfolio">
-    <div class="container">
-      <section class="section services">
-        <div class="container">
-          <div class="row justify-content-center text-center mb-4">
-            <div class="col-5">
-              <RouterLink to="/">MyTrip</RouterLink>
-              <p>Enjoy Trip and Live Alive</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="row">
-        <button class="col-12 col-sm-6 col-md-6 col-lg-4 item-wrap fancybox" @click="board">
-          <i class="bi bi-card-checklist"></i>
-          <h4 class="h4 mb-2">Board</h4>
-          <p>사람들과 의견을 나누어요</p>
-          <ul class="list-unstyled list-line">
-            <li>관광지 그 차제에 대하여</li>
-            <li>관광지 근처 맛집</li>
-            <li>관광지 근처 숙소</li>
-            <li>관광지 교통편</li>
-          </ul>
-        </button>
-        <button class="col-12 col-sm-6 col-md-6 col-lg-4 item-wrap fancybox" @click="map">
-          <i class="bi bi-binoculars"></i>
-          <h4 class="h4 mb-2">Search</h4>
-          <p>지역별로 관광지를 알아보아요</p>
-          <ul class="list-unstyled list-line">
-            <li>시/도별 관광지 이름</li>
-            <li>시/도별 관광지 주소</li>
-            <li>시/도별 관광지 지도</li>
-          </ul>
-        </button>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-6">
+        <router-link class="left-button" to="/board" @mouseover="leftButtonHover = true" @mouseleave="leftButtonHover = false">
+          <button :class="{ 'hovered': leftButtonHover }" class="btn btn-primary btn-lg btn-block full-height-button left-button-bg">
+            <span class="button-text">게시판</span>
+          </button>
+        </router-link>
+      </div>
+      <div class="col-6">
+        <router-link class="right-button" to="/map" @mouseover="rightButtonHover = true" @mouseleave="rightButtonHover = false">
+          <button :class="{ 'hovered': rightButtonHover }" class="btn btn-primary btn-lg btn-block full-height-button right-button-bg">
+            <span class="button-text">지도</span>
+          </button>
+        </router-link>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
-<script setup>
-import { useRouter } from 'vue-router';
+<style>
+.row {
+  margin: 0;
+}
 
-const router = useRouter();
+.left-button,
+.right-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-const board = () => {
-  router.push("/board");
-};
-const map = () => {
-  router.push("/map");
-};
-</script>
+.container-fluid {
+  padding: 0;
+}
 
-<style scoped></style>
+button {
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  font-size: large;
+  transition: background-color 0.3s, color 0.3s; /* 배경색과 글자색의 변화를 부드럽게 만듭니다. */
+}
+
+.full-height-button {
+  width: 100vw;
+  height: 100vh;
+}
+
+.left-button-bg {
+  background-image: url(''); /* 왼쪽 버튼의 배경 이미지 URL */
+}
+
+.right-button-bg {
+  background-image: url('./images/main/map.JPG'); /* 오른쪽 버튼의 배경 이미지 URL */
+}
+
+.left-button-bg:hover button,
+.right-button-bg:hover button {
+  background-color: rgba(0, 0, 0, 0.5); /* 마우스를 올렸을 때 배경색이 약간 투명해집니다. */
+  color: #000; /* 텍스트의 색상을 검정색으로 변경합니다. */
+}
+
+.button-text {
+  text-decoration: none; /* 버튼 텍스트의 밑줄을 없앱니다. */
+}
+
+.left-button-bg:hover button .button-text,
+.right-button-bg:hover button .button-text {
+  text-decoration: none; /* 마우스를 올렸을 때 버튼 텍스트의 밑줄을 없앱니다. */
+}
+</style>
