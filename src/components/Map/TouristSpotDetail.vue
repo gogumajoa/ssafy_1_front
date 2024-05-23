@@ -113,7 +113,8 @@ const fetchRelatedPosts = async (newSpot) => { //관련 게시글
       // Axios를 사용하여 API를 호출합니다.
       const response = await axios.get(`http://localhost:8080/touristspot/relativeBoard/${newSpot.touristspotId}`);
       // API 응답으로부터 관련된 게시글을 가져와서 ref에 할당합니다.
-      checkAccount.value = response.data;
+      relatedPosts.value = response.data;
+      console.log( checkAccount.value)
     } catch (error) {
       console.error('API 호출 중 오류 발생:', error);
     }
@@ -128,6 +129,7 @@ const closeDetail = () => {
 
 const fetchRecommends = async (newSpot) => {
   if (newSpot) {
+
     try {
       // Axios를 사용하여 API를 호출합니다.
       const response = await axios.get(`http://localhost:8080/touristspot/recommends/board/${newSpot.touristspotId}`);
